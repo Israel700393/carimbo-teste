@@ -24,7 +24,7 @@
       border-radius: 6px;
       background: #007bff;
       color: white;
-      transition: background 0.3s;
+      transition:  0.3s;
     }
 
     button:hover {
@@ -69,27 +69,34 @@
       background: #28a745;
     }
 
-    /* === Carimbo === */
-    .stamp {
-      position: absolute;
-      top: 20px;
-      left: 50%;
-      transform: translateX(-50%) scale(0);
-      font-size: 28px;
-      font-weight: bold;
-      color: red;
-      border: 3px solid red;
-      padding: 10px 20px;
-      border-radius: 8px;
-      text-transform: uppercase;
-      opacity: 0;
-      z-index: 10;
-    }
+    /*  Carimbo */
+.stamp {
+  color: #555;
+  font-size: 3rem;
+  font-weight: 700;
+  border: 0.25rem solid #555;
+  display: inline-block;
+  padding: 0.25rem 1rem;
+  border-radius: 1rem;
+  font-family: 'Courier';
+  -webkit-mask-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/8399/grunge.png');  
+  position: absolute;       
+  top: 20px;                
+  left: 50%;                
+  transform: translateX(-50%); 
+}
 
     /* Animação do carimbo */
     .stamp.show {
       animation: stampIn 0.5s ease forwards;
     }
+    .is-approved {
+	color: #0A9928;
+	border: 0.5rem solid #0A9928;
+	-webkit-mask-position: 4rem 4rem;
+	transform: rotate(-10deg);
+  border-radius: 0;
+} 
 
     @keyframes stampIn {
       0% {
@@ -119,7 +126,7 @@
       position: absolute;
       width: 6px;
       height: 6px;
-      background: rgba(200,0,0,0.6);
+      background: rgba(83, 0, 0, 0.6);
       border-radius: 50%;
       pointer-events: none;
       opacity: 0;
@@ -138,9 +145,9 @@
 
   <div class="overlay" id="overlay">
     <div class="alert-box">
-      <div class="stamp" id="stamp">Aprovado?</div>
+      <span class="stamp is-approved"class="stamp" id="stamp">Approved</span>
       <p id="alertMessage">Sua ação foi concluída Beto</p>
-      <button onclick="closeAlert()">OK</button>
+      <button onclick="closeAlert()">DEMORO</button>
     </div>
   </div>
 
@@ -152,13 +159,13 @@
 
       // Reset animação do carimbo
       stamp.classList.remove("show");
-      void stamp.offsetWidth; // reset CSS trick
+      void stamp.offsetWidth; 
       setTimeout(() => {
         stamp.classList.add("show");
 
         // Criar partículas (poeira)
         createParticles(stamp);
-      }, 200);
+      },200);
     }
 
     function closeAlert() {
