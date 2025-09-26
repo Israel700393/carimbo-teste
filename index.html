@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Carimbo teste</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: #f4f4f4;
+    }
+
+    button {
+      padding: 12px 24px;
+      font-size: 16px;
+      cursor: pointer;
+      border: none;
+      border-radius: 6px;
+      background: #007bff;
+      color: white;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #0056b3;
+    }
+
+    /* === Overlay === */
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.6);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+    }
+
+    /* === Caixa do Alerta === */
+    .alert-box {
+      position: relative;
+      background: white;
+      padding: 40px;
+      border-radius: 10px;
+      text-align: center;
+      max-width: 350px;
+      width: 80%;
+      animation: fadeIn 0.3s ease forwards;
+      overflow: hidden;
+    }
+
+    .alert-box p {
+      margin-top: 60px;
+      font-size: 18px;
+      color: #333;
+    }
+
+    .alert-box button {
+      margin-top: 20px;
+      background: #28a745;
+    }
+
+    /* === Carimbo === */
+    .stamp {
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%) scale(0);
+      font-size: 28px;
+      font-weight: bold;
+      color: red;
+      border: 3px solid red;
+      padding: 10px 20px;
+      border-radius: 8px;
+      text-transform: uppercase;
+      opacity: 0;
+      z-index: 10;
+    }
+
+    /* Animação do carimbo */
+    .stamp.show {
+      animation: stampIn 0.5s ease forwards;
+    }
+
+    @keyframes stampIn {
+      0% {
+        transform: translateX(-50%) scale(3) rotate(-30deg);
+        opacity: 0;
+      }
+      50% {
+        transform: translateX(-50%) scale(1.2) rotate(10deg);
+        opacity: 1;
+      }
+      70% {
+        transform: translateX(-50%) scale(0.9) rotate(-5deg);
+      }
+      100% {
+        transform: translateX(-50%) scale(1) rotate(0deg);
+        opacity: 1;
+      }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.8); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    /* Partículas da poeira */
+    .particle {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      background: rgba(200,0,0,0.6);
+      border-radius: 50%;
+      pointer-events: none;
+      opacity: 0;
+      animation: explode 0.8s forwards;
+    }
+
+    @keyframes explode {
+      0% { transform: translate(0,0) scale(1); opacity: 1; }
+      100% { transform: translate(var(--x), var(--y)) scale(0.3); opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <button onclick="showAlert()">aperta ai Beto</button>
+
+  <div class="overlay" id="overlay">
+    <div class="alert-box">
+      <div class="stamp" id="stamp">Aprovado?</div>
+      <p id="alertMessage">Sua ação foi concluída Beto</p>
+      <button onclick="closeAlert()">OK</button>
+    </div>
+  </div>
+
+  <script>
+    function showAlert() {
+      const overlay = document.getElementById("overlay");
+      const stamp = document.getElementById("stamp");
+      overlay.style.display = "flex";
+
+      // Reset animação do carimbo
+      stamp.classList.remove("show");
+      void stamp.offsetWidth; // reset CSS trick
+      setTimeout(() => {
+        stamp.classList.add("show");
+
+        // Criar partículas (poeira)
+        createParticles(stamp);
+      }, 200);
+    }
+
+    function closeAlert() {
+      document.getElementById("overlay").style.display = "none";
+    }
+
+    // Fechar clicando fora
+    document.getElementById("overlay").addEventListener("click", function(e) {
+      if (e.target === this) closeAlert();
+    });
+
+    // Função de partículas
+    function createParticles(stamp) {
+      const alertBox = stamp.parentElement;
+      const rect = stamp.getBoundingClientRect();
+      const boxRect = alertBox.getBoundingClientRect();
+      const centerX = rect.left + rect.width/2 - boxRect.left;
+      const centerY = rect.top + rect.height/2 - boxRect.top;
+
+      for (let i = 0; i < 80; i++) {
+        const particle = document.createElement("div");
+        particle.classList.add("particle");
+        particle.style.left = centerX + "px";
+        particle.style.top = centerY + "px";
+
+        const angle = Math.random() * 2 * Math.PI;
+        const distance = 80 + Math.random() * 1000;
+        const x = Math.cos(angle) * distance + "px";
+        const y = Math.sin(angle) * distance + "px";
+        particle.style.setProperty("--x", x);
+        particle.style.setProperty("--y", y);
+
+        alertBox.appendChild(particle);
+
+        // Remover após a animação
+        particle.addEventListener("animationend", () => {
+          particle.remove();
+        });
+      }
+    }
+  </script>
+</body>
+</html>
