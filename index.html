@@ -24,7 +24,7 @@
       border-radius: 6px;
       background: #007bff;
       color: white;
-      transition:  0.3s;
+      transition: 0.3s;
     }
 
     button:hover {
@@ -54,8 +54,8 @@
       text-align: center;
       max-width: 350px;
       width: 80%;
-      animation: fadeIn 0.3s ease forwards;
       overflow: hidden;
+      animation: fadeIn 0.3s ease forwards;
     }
 
     .alert-box p {
@@ -70,33 +70,34 @@
     }
 
     /*  Carimbo */
-.stamp {
-  color: #555;
-  font-size: 3rem;
-  font-weight: 700;
-  border: 0.25rem solid #555;
-  display: inline-block;
-  padding: 0.25rem 1rem;
-  border-radius: 1rem;
-  font-family: 'Courier';
-  -webkit-mask-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/8399/grunge.png');  
-  position: absolute;       
-  top: 20px;                
-  left: 50%;                
-  transform: translateX(-50%); 
-}
+    .stamp {
+      color: #555;
+      font-size: 3rem;
+      font-weight: 700;
+      border: 0.25rem solid #555;
+      display: inline-block;
+      padding: 0.25rem 1rem;
+      border-radius: 1rem;
+      font-family: 'Courier';
+      -webkit-mask-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/8399/grunge.png');  
+      position: absolute;       
+      top: 20px;                
+      left: 50%;                
+      transform: translateX(-50%); 
+    }
 
     /* Animação do carimbo */
     .stamp.show {
       animation: stampIn 0.5s ease forwards;
     }
+
     .is-approved {
-	color: #0A9928;
-	border: 0.5rem solid #0A9928;
-	-webkit-mask-position: 4rem 4rem;
-	transform: rotate(-10deg);
-  border-radius: 0;
-} 
+      color: #0A9928;
+      border: 0.5rem solid #0A9928;
+      -webkit-mask-position: 4rem 4rem;
+      transform: rotate(-10deg);
+      border-radius: 0;
+    } 
 
     @keyframes stampIn {
       0% {
@@ -121,12 +122,26 @@
       to { opacity: 1; transform: scale(1); }
     }
 
+    /* === Tremida do impacto === */
+    @keyframes shake {
+      0% { transform: translate(0,0); }
+      20% { transform: translate(-5px,0); }
+      40% { transform: translate(5px,0); }
+      60% { transform: translate(-4px,0); }
+      80% { transform: translate(4px,0); }
+      100% { transform: translate(0,0); }
+    }
+
+    .alert-box.shake {
+      animation: shake 0.4s ease;
+    }
+
     /* Partículas da poeira */
     .particle {
       position: absolute;
       width: 6px;
       height: 6px;
-      background: rgba(83, 0, 0, 0.6);
+      background: rgba(201, 82, 82, 0.6);
       border-radius: 50%;
       pointer-events: none;
       opacity: 0;
@@ -144,8 +159,8 @@
   <button onclick="showAlert()">aperta ai Beto</button>
 
   <div class="overlay" id="overlay">
-    <div class="alert-box">
-      <span class="stamp is-approved"class="stamp" id="stamp">Approved</span>
+    <div class="alert-box" id="alertBox">
+      <span class="stamp is-approved" id="stamp">Approved</span>
       <p id="alertMessage">Sua ação foi concluída Beto</p>
       <button onclick="closeAlert()">DEMORO</button>
     </div>
@@ -155,13 +170,21 @@
     function showAlert() {
       const overlay = document.getElementById("overlay");
       const stamp = document.getElementById("stamp");
+      const alertBox = document.getElementById("alertBox");
+
       overlay.style.display = "flex";
 
       // Reset animação do carimbo
       stamp.classList.remove("show");
       void stamp.offsetWidth; 
+
       setTimeout(() => {
         stamp.classList.add("show");
+
+        // Tremida da caixa no impacto
+        alertBox.classList.remove("shake");
+        void alertBox.offsetWidth; // força reflow
+        alertBox.classList.add("shake");
 
         // Criar partículas (poeira)
         createParticles(stamp);
@@ -202,7 +225,7 @@
 
         // Remover após a animação
         particle.addEventListener("animationend", () => {
-          particle.remove();
+         particle.remove();
         });
       }
     }
